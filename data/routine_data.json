@@ -1,0 +1,122 @@
+[
+  
+  {
+    "day": "রবিবার",
+    "batch": "CSE-58B",
+    "start_time": "02:15 PM",
+    "end_time": "03:30 PM",
+    "course_code": "CE",
+    "room": "GL-1",
+    "faculty_initial": "MMH"
+  },
+  {
+    "day": "রবিবার",
+    "batch": "CSE-58B",
+    "start_time": "03:30 PM",
+    "end_time": "04:45 PM",
+    "course_code": "Al",
+    "room": "409",
+    "faculty_initial": "KBH"
+  },
+  {
+    "day": "সোমবার",
+    "batch": "CSE-58B",
+    "start_time": "10:15 AM",
+    "end_time": "11:30 AM",
+    "course_code": "Al Lab",
+    "room": "309",
+    "faculty_initial": "INC"
+  },
+  {
+    "day": "সোমবার",
+    "batch": "CSE-58B",
+    "start_time": "11:30 AM",
+    "end_time": "12:45 PM",
+    "course_code": "OS Lab",
+    "room": "307",
+    "faculty_initial": "NZR"
+  },
+  {
+    "day": "সোমবার",
+    "batch": "CSE-58B",
+    "start_time": "01:00 PM",
+    "end_time": "02:15 PM",
+    "course_code": "OS",
+    "room": "506",
+    "faculty_initial": "AHC"
+  },
+  {
+    "day": "সোমবার",
+    "batch": "CSE-58B",
+    "start_time": "02:15 PM",
+    "end_time": "03:30 PM",
+    "course_code": "Al",
+    "room": "404",
+    "faculty_initial": "KBH"
+  },
+  {
+    "day": "সোমবার",
+    "batch": "CSE-58B",
+    "start_time": "03:30 PM",
+    "end_time": "04:45 PM",
+    "course_code": "OS",
+    "room": "502",
+    "faculty_initial": "NZR"
+  },
+  {
+    "day": "মঙ্গলবার",
+    "batch": "CSE-58B",
+    "start_time": "01:00 PM",
+    "end_time": "02:15 PM",
+    "course_code": "CE",
+    "room": "408",
+    "faculty_initial": "MMH"
+  },
+  {
+    "day": "মঙ্গলবার",
+    "batch": "CSE-58B",
+    "start_time": "02:15 PM",
+    "end_time": "03:30 PM",
+    "course_code": "Al",
+    "room": "408",
+    "faculty_initial": "INC"
+  },
+  {
+    "day": "বৃহস্পতিবার",
+    "batch": "CSE-58B",
+    "start_time": "11:30 AM",
+    "end_time": "12:45 PM",
+    "course_code": "Al",
+    "room": "501",
+    "faculty_initial": "KBH"
+  },
+  {
+    "day": "বৃহস্পতিবার",
+    "batch": "CSE-58B",
+    "start_time": "01:00 PM",
+    "end_time": "02:15 PM",
+    "course_code": "Al Lab",
+    "room": "309",
+    "faculty_initial": "KBH"
+  },
+  {
+    "day": "বৃহস্পতিবার",
+    "batch": "CSE-58B",
+    "start_time": "02:15 PM",
+    "end_time": "03:30 PM",
+    "course_code": "OS",
+    "room": "501",
+    "faculty_initial": "NZR"
+  },
+  {
+    "day": "বৃহস্পতিবার",
+    "batch": "CSE-58B",
+    "start_time": "03:30 PM",
+    "end_time": "04:45 PM",
+    "course_code": "CE",
+    "room": "GL-2",
+    "faculty_initial": "MMH"
+  }
+  
+  
+]
