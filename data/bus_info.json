@@ -1,13 +1,13 @@
 [
     {
-        "route_name": "Dhanmondi",
-        "bus_no": "Bus-101",
+        "route_name": "Temukhi",
+        "bus_no": "11-0944",
         "bus_type": "Student",
-        "departure_time": "01:30 PM",
-        "arrival_time": "02:30 PM",
-        "departure_location": "Campus",
-        "arrival_location": "Zigatola",
-        "route_details": "Campus -> Mohammadpur -> Dhanmondi 27 -> Dhanmondi 15 -> Zigatola"
+        "departure_time": "08:10 AM",
+        "arrival_time": "08:50 AM",
+        "departure_location": "Temukhi",
+        "arrival_location": "Campus",
+        "route_details": "Temukhi -> Modina Market -> Subid Bazar -> Amborkhana -> Shahi Edgah -> Tilaghor -> Campus"
     },
     {
         "route_name": "Dhanmondi",
