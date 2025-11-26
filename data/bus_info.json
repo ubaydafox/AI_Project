@@ -1,0 +1,32 @@
+[
+    {
+        "route_name": "Dhanmondi",
+        "bus_no": "Bus-101",
+        "bus_type": "Student",
+        "departure_time": "01:30 PM",
+        "arrival_time": "02:30 PM",
+        "departure_location": "Campus",
+        "arrival_location": "Zigatola",
+        "route_details": "Campus -> Mohammadpur -> Dhanmondi 27 -> Dhanmondi 15 -> Zigatola"
+    },
+    {
+        "route_name": "Dhanmondi",
+        "bus_no": "Bus-101",
+        "bus_type": "Student",
+        "departure_time": "07:30 AM",
+        "arrival_time": "08:30 AM",
+        "departure_location": "Zigatola",
+        "arrival_location": "Campus",
+        "route_details": "Zigatola -> Dhanmondi 15 -> Dhanmondi 27 -> Mohammadpur -> Campus"
+    },
+    {
+        "route_name": "Uttara",
+        "bus_no": "Bus-202",
+        "bus_type": "Teacher & Staff",
+        "departure_time": "01:30 PM",
+        "arrival_time": "03:00 PM",
+        "departure_location": "Campus",
+        "arrival_location": "Uttara House Building",
+        "route_details": "Campus -> Kuril -> Airport -> Jashimuddin -> Uttara House Building"
+    }
+]

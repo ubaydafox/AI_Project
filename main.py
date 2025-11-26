@@ -3,8 +3,10 @@ import logging
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
-from routine_data_manager import get_current_class, get_weekly_routine, get_faculty_info, get_course_info
+from telegram.request import HTTPXRequest
+from routine_data_manager import get_current_class, get_weekly_routine, get_faculty_info, get_course_info, get_bus_schedule
 from gemini_qa import ask_gemini
+from collections import defaultdict, deque
 
 # .env ফাইল থেকে টোকেন লোড করা
 load_dotenv()
@@ -33,7 +35,9 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         f'/class_current - বর্তমানে কোন ক্লাস চলছে তা জানাবে\n'
         f'/weekly_routine - আপনার ব্যাচের সাপ্তাহিক রুটিন দেখাবে\n'
         f'/faculty_info_cse <initial> - শিক্ষকের পূর্ণ নাম ও তথ্য জানাবে (যেমন: /faculty_info_cse NIR)\n'
-        f'/course_info <code_name> - কোর্সের পূর্ণ নাম ও তথ্য জানাবে (যেমন: /course_info OOP)'
+        f'/faculty_info_cse <initial> - শিক্ষকের পূর্ণ নাম ও তথ্য জানাবে (যেমন: /faculty_info_cse NIR)\n'
+        f'/course_info <code_name> - কোর্সের পূর্ণ নাম ও তথ্য জানাবে (যেমন: /course_info OOP)\n'
+        f'/bus - বাসের সময়সূচী জানাবে (যেমন: /bus বা /bus Dhanmondi)'
     )
 
 # /class_current কমান্ড
@@ -70,21 +74,26 @@ async def course_info_command(update: Update, context: ContextTypes.DEFAULT_TYPE
     response = get_course_info(code)
     await update.message.reply_text(response, parse_mode='Markdown')
 
+# /bus কমান্ড
+async def bus_schedule_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = " ".join(context.args) if context.args else None
+    response = get_bus_schedule(query)
+    await update.message.reply_text(response, parse_mode='Markdown')
+
 # ==========================================================
 # মূল ফাংশন: বট চালু করা
 # ==========================================================
-from collections import defaultdict, deque
-
-# Store short-term context: user_id -> deque of (role, message)
-user_histories = defaultdict(lambda: deque(maxlen=5))  # keep last 5 exchanges per user
 
 def main() -> None:
     if not BOT_TOKEN:
         print("❌ ত্রুটি: BOT_TOKEN পাওয়া যায়নি। .env ফাইল চেক করুন।")
         return
 
+    # Request অবজেক্ট তৈরি করা (টাইমআউট বাড়ানোর জন্য)
+    request = HTTPXRequest(connection_pool_size=8, read_timeout=30.0, write_timeout=30.0, connect_timeout=30.0)
+
     # Application তৈরি করা
-    application = Application.builder().token(BOT_TOKEN).build()
+    application = Application.builder().token(BOT_TOKEN).request(request).build()
 
     # কমান্ড হ্যান্ডলারগুলো যুক্ত করা
     application.add_handler(CommandHandler("start", start_command))
@@ -92,6 +101,10 @@ def main() -> None:
     application.add_handler(CommandHandler("weekly_routine", weekly_routine_command))
     application.add_handler(CommandHandler("faculty_info_cse", faculty_info_command))
     application.add_handler(CommandHandler("course_info", course_info_command))
+    application.add_handler(CommandHandler("bus", bus_schedule_command))
+
+    # Store short-term context: user_id -> deque of (role, message)
+    user_histories = defaultdict(lambda: deque(maxlen=5))  # keep last 5 exchanges per user
 
     # Any text message: Gemini AI answer
     async def gemini_message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

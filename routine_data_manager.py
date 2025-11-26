@@ -11,13 +11,15 @@ def load_data():
             courses = json.load(f)
         with open('data/faculty_info.json', 'r', encoding='utf-8') as f:
             faculty = json.load(f)
-        return routine, courses, faculty
+        with open('data/bus_info.json', 'r', encoding='utf-8') as f:
+            bus = json.load(f)
+        return routine, courses, faculty, bus
     except FileNotFoundError as e:
         print(f"Error: Data file not found - {e}")
-        return [], {}, {}
+        return [], {}, {}, []
 
 # গ্লোবাল ডেটা লোড করা
-routine_data, course_info, faculty_info = load_data()
+routine_data, course_info, faculty_info, bus_info = load_data()
 
 # ==========================================================
 # ফাংশন ১: বর্তমান ক্লাস খুঁজে বের করা
@@ -122,3 +124,113 @@ def get_course_info(code):
         return f"📚 **কোর্স পরিচিতি:**\nকোর্স নাম: {full_name}\nকোর্স কোড: {code.upper()}\n"
     else:
         return f"দুঃখিত, কোর্স কোড **{code.upper()}** এর জন্য কোনো তথ্য পাওয়া যায়নি।"
+
+# ==========================================================
+# ফাংশন ৫: বাসের সময়সূচী
+# ==========================================================
+def get_bus_schedule(query=None):
+    if not bus_info:
+        return "🚌 বর্তমানে কোনো বাসের তথ্য পাওয়া যায়নি।"
+    
+    results = []
+    if query:
+        query = query.strip().lower()
+        for bus in bus_info:
+            # Search in route details, route name, or bus no
+            route_details = bus.get('route_details', '').lower()
+            route_name = bus.get('route_name', '').lower()
+            bus_no = bus.get('bus_no', '').lower()
+            
+            if query in route_details or query in route_name or query in bus_no:
+                results.append(bus)
+    else:
+        results = bus_info
+
+    if not results:
+        return f"❌ '{query}' এর জন্য কোনো বাসের রুট পাওয়া যায়নি। দয়া করে বাসের শুরুর স্থান (Start Route) দিয়ে চেষ্টা করুন।"
+
+    response = "🚌 **বিশ্ববিদ্যালয় বাস সময়সূচী:**\n"
+    for bus in results:
+        route_details = bus.get('route_details', 'N/A')
+        
+        # Highlight the query in route details if it exists
+        if query and query in route_details.lower():
+            # Case-insensitive replacement to preserve original case but add markdown
+            import re
+            pattern = re.compile(re.escape(query), re.IGNORECASE)
+            route_details = pattern.sub(lambda m: f"**__{m.group(0)}__**", route_details)
+
+        response += (
+            f"\n📍 **রুট:** {bus.get('route_name', 'N/A')} ({bus.get('departure_location', 'N/A')} ➡️ {bus.get('arrival_location', 'N/A')})\n"
+            f"🚌 **বাস নং:** {bus.get('bus_no', 'N/A')} | 🏷️ **ধরন:** {bus.get('bus_type', 'N/A')}\n"
+            f"🕒 **সময়:** {bus.get('departure_time', 'N/A')} (ছাড়বে) - {bus.get('arrival_time', 'N/A')} (পৌঁছাবে)\n"
+            f"🛣️ **স্টপেজ:** {route_details}\n"
+        )
+    return response
+
+# ==========================================================
+# ফাংশন ৬: ডেটা সেভ করা এবং নতুন এন্ট্রি যোগ করা (Admin Only)
+# ==========================================================
+
+def save_routine_data(data):
+    try:
+        with open('data/routine_data.json', 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        return True
+    except Exception as e:
+        print(f"Error saving routine data: {e}")
+        return False
+
+def save_course_info(data):
+    try:
+        with open('data/course_info.json', 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        return True
+    except Exception as e:
+        print(f"Error saving course info: {e}")
+        return False
+
+def save_faculty_info(data):
+    try:
+        with open('data/faculty_info.json', 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        return True
+    except Exception as e:
+        print(f"Error saving faculty info: {e}")
+        return False
+
+def add_routine_entry(day, batch, start_time, end_time, course_code, room, faculty_initial):
+    new_entry = {
+        "day": day,
+        "batch": batch,
+        "start_time": start_time,
+        "end_time": end_time,
+        "course_code": course_code,
+        "room": room,
+        "faculty_initial": faculty_initial
+    }
+    routine_data.append(new_entry)
+    if save_routine_data(routine_data):
+        return "✅ রুটিন এন্ট্রি সফলভাবে যোগ করা হয়েছে!"
+    else:
+        return "❌ রুটিন সেভ করতে সমস্যা হয়েছে।"
+
+def add_course_entry(code, full_name):
+    if code.upper() in course_info:
+        return f"⚠️ কোর্স কোড {code.upper()} ইতিমধ্যে বিদ্যমান।"
+    
+    course_info[code.upper()] = full_name
+    if save_course_info(course_info):
+        return f"✅ কোর্স '{full_name}' ({code.upper()}) সফলভাবে যোগ করা হয়েছে!"
+    else:
+        return "❌ কোর্স ইনফো সেভ করতে সমস্যা হয়েছে।"
+
+def add_faculty_entry(initial, full_name):
+    if initial.upper() in faculty_info:
+        return f"⚠️ ইনিশিয়াল {initial.upper()} ইতিমধ্যে বিদ্যমান।"
+        
+    faculty_info[initial.upper()] = full_name
+    if save_faculty_info(faculty_info):
+        return f"✅ শিক্ষক '{full_name}' ({initial.upper()}) সফলভাবে যোগ করা হয়েছে!"
+    else:
+        return "❌ ফ্যাকাল্টি ইনফো সেভ করতে সমস্যা হয়েছে।"
