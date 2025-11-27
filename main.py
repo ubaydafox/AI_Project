@@ -37,7 +37,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         f'/faculty_info_cse <initial> - শিক্ষকের পূর্ণ নাম ও তথ্য জানাবে (যেমন: /faculty_info_cse NIR)\n'
         f'/faculty_info_cse <initial> - শিক্ষকের পূর্ণ নাম ও তথ্য জানাবে (যেমন: /faculty_info_cse NIR)\n'
         f'/course_info <code_name> - কোর্সের পূর্ণ নাম ও তথ্য জানাবে (যেমন: /course_info OOP)\n'
-        f'/bus - বাসের সময়সূচী জানাবে (যেমন: /bus বা /bus Dhanmondi)\n'
+        f'/bus - বাসের সময়সূচী জানাবে (যেমন: /bus বা /bus Tilagor)\n'
         f'/about_us - বট সম্পর্কে বিস্তারিত জানুন'
     )
 
