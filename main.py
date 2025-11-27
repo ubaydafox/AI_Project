@@ -37,7 +37,8 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         f'/faculty_info_cse <initial> - শিক্ষকের পূর্ণ নাম ও তথ্য জানাবে (যেমন: /faculty_info_cse NIR)\n'
         f'/faculty_info_cse <initial> - শিক্ষকের পূর্ণ নাম ও তথ্য জানাবে (যেমন: /faculty_info_cse NIR)\n'
         f'/course_info <code_name> - কোর্সের পূর্ণ নাম ও তথ্য জানাবে (যেমন: /course_info OOP)\n'
-        f'/bus - বাসের সময়সূচী জানাবে (যেমন: /bus বা /bus Dhanmondi)'
+        f'/bus - বাসের সময়সূচী জানাবে (যেমন: /bus বা /bus Dhanmondi)\n'
+        f'/about_us - বট সম্পর্কে বিস্তারিত জানুন'
     )
 
 # /class_current কমান্ড
@@ -80,6 +81,17 @@ async def bus_schedule_command(update: Update, context: ContextTypes.DEFAULT_TYP
     response = get_bus_schedule(query)
     await update.message.reply_text(response, parse_mode='Markdown')
 
+# /about_us কমান্ড
+async def about_us_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(
+        "*MetroMate - Your Campus Assistant*\n\n"
+        "MetroMate একটি স্মার্ট বট যা আপনাকে ক্যাম্পাসের দৈনন্দিন প্রয়োজনে সাহায্য করার জন্য তৈরি করা হয়েছে।\n"
+        "এটি আপনাকে ক্লাসের রুটিন, ফ্যাকাল্টি ইনফো এবং বাসের শিডিউল সম্পর্কে তথ্য দিতে পারে।\n\n"
+        "Developed by *Abu Ubayda & Nahidul Islam Rony*\n\n"
+        "Developed with ❤️ for students.",
+        parse_mode='Markdown'
+    )
+
 # ==========================================================
 # মূল ফাংশন: বট চালু করা
 # ==========================================================
@@ -102,6 +114,7 @@ def main() -> None:
     application.add_handler(CommandHandler("faculty_info_cse", faculty_info_command))
     application.add_handler(CommandHandler("course_info", course_info_command))
     application.add_handler(CommandHandler("bus", bus_schedule_command))
+    application.add_handler(CommandHandler("about_us", about_us_command))
 
     # Store short-term context: user_id -> deque of (role, message)
     user_histories = defaultdict(lambda: deque(maxlen=5))  # keep last 5 exchanges per user
