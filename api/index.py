@@ -144,7 +144,19 @@ _app = None
 async def get_app():
     global _app
     if _app is None:
-        _app = Application.builder().token(BOT_TOKEN).build()
+        if not BOT_TOKEN:
+            logger.error("BOT_TOKEN is not set in environment variables.")
+            return None
+            
+        # Configure request with timeouts
+        request = HTTPXRequest(
+            connection_pool_size=8,
+            read_timeout=30.0,
+            write_timeout=30.0,
+            connect_timeout=30.0
+        )
+        
+        _app = Application.builder().token(BOT_TOKEN).request(request).build()
         
         register_conv = ConversationHandler(
             entry_points=[CommandHandler("register", register_start)],
@@ -168,21 +180,30 @@ async def get_app():
 # Vercel entry point
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length)
-        update_data = json.loads(post_data.decode('utf-8'))
+        try:
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            update_data = json.loads(post_data.decode('utf-8'))
 
-        async def process():
-            app = await get_app()
-            update = Update.de_json(update_data, app.bot)
-            await app.process_update(update)
+            async def process():
+                app = await get_app()
+                if app:
+                    update = Update.de_json(update_data, app.bot)
+                    await app.process_update(update)
+                else:
+                    logger.error("Failed to initialize Telegram Application")
 
-        asyncio.run(process())
+            asyncio.run(process())
 
-        self.send_response(200)
-        self.send_header('Content-type', 'text/plain')
-        self.end_headers()
-        self.wfile.write(b"OK")
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            self.wfile.write(b"OK")
+        except Exception as e:
+            logger.error(f"Error handling POST request: {e}")
+            self.send_response(500)
+            self.end_headers()
+            self.wfile.write(str(e).encode())
 
     def do_GET(self):
         self.send_response(200)

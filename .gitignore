@@ -10,6 +10,12 @@ __pycache__/
 # Virtual Environments
 venv/
 env/
+.venv/
+venv-win/
+
+# Logs
+logs/
+*.log
 
 # OS Files
 .DS_Store

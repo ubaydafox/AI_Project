@@ -1,21 +1,31 @@
 import json
 import os
 from dotenv import load_dotenv
+from constants import DATA_DIR, IS_VERCEL
 
 load_dotenv()
 
-USERS_FILE = 'data/users.json'
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123") # Default if not set, but should be set in .env
+USERS_FILE = DATA_DIR / 'users.json'
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 
 # Load users
 def load_users():
     try:
+        if not USERS_FILE.exists():
+            return {}
         with open(USERS_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
-    except FileNotFoundError:
+    except Exception as e:
+        print(f"Error loading users: {e}")
         return {}
 
 def save_users(users):
+    if IS_VERCEL:
+        # Vercel filesystem is read-only. In production, a database like Upstash Redis, 
+        # Supabase, or Vercel KV should be used.
+        print("Warning: Attempted to save users on Vercel's read-only filesystem.")
+        return False
+        
     try:
         with open(USERS_FILE, 'w', encoding='utf-8') as f:
             json.dump(users, f, indent=4, ensure_ascii=False)
@@ -50,8 +60,6 @@ def authenticate_admin(user_id, password):
     if password == ADMIN_PASSWORD:
         users = load_users()
         if str(user_id) not in users:
-            # Auto-register as admin if not exists, or just update role?
-            # Let's just update role or create a simple admin profile
             users[str(user_id)] = {
                 "role": "admin"
             }
