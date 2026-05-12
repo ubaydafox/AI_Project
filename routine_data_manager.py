@@ -224,7 +224,7 @@ def get_bus_schedule(query=None):
 
 def save_routine_data(data):
     try:
-        with open('data/routine_data.json', 'w', encoding='utf-8') as f:
+        with open(DATA_DIR / 'routine_data.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
         return True
     except Exception as e:
@@ -233,7 +233,7 @@ def save_routine_data(data):
 
 def save_course_info(data):
     try:
-        with open('data/course_info.json', 'w', encoding='utf-8') as f:
+        with open(DATA_DIR / 'course_info.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
         return True
     except Exception as e:
@@ -242,7 +242,7 @@ def save_course_info(data):
 
 def save_faculty_info(data):
     try:
-        with open('data/faculty_info.json', 'w', encoding='utf-8') as f:
+        with open(DATA_DIR / 'faculty_info.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
         return True
     except Exception as e:

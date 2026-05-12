@@ -1,53 +1,97 @@
-<!-- Digital Futuristic README for AI_Project -->
+# 🤖 MetroMate — Your Campus Assistant
 
 <p align="center">
-  <strong style="font-size:28px; color:#00FF00;">
-    🚀 AI_Project — MetroMate
-  </strong>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
+  <img src="https://img.shields.io/badge/Gemini_AI-4285F4?style=for-the-badge&logo=google&logoColor=white" />
 </p>
 
-<p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?size=25&duration=4000&color=00FF00&center=true&vCenter=true&width=700&lines=Smart+Telegram+Bot;University+Routine+Assistant;Faculty+Info+Manager;Gemini+AI+Powered;Built+with+Passion+and+Code" />
-</p>
+**MetroMate** is a smart Telegram bot designed to assist university students with their daily routines, faculty information, and general campus queries using AI.
 
 ---
 
-## 📌 Overview
-MetroMate is a **Telegram bot** designed for university students.  
-It provides:
-- 📅 **Class routines** at your fingertips  
-- 👨‍🏫 **Faculty information** instantly accessible  
-- 🤖 **Gemini AI integration** for smart responses  
-- ⚡ A seamless, digital assistant experience  
+## 🌟 Key Features
 
-This project combines **automation, AI, and usability** to simplify student life.
-
----
-
-## 🛠️ Tech Stack
-- **Languages:** Python 🐍, SQL  
-- **Frameworks:** Node.js, PHP (for backend modules)  
-- **Database:** MySQL  
-- **AI Integration:** Gemini AI API  
-- **Platform:** Telegram Bot API  
+- 📅 **Smart Routine**: Get current and next class details instantly.
+- 📋 **Weekly Schedule**: View your entire week's routine in a formatted message.
+- 👨‍🏫 **Faculty Directory**: Search for faculty details using initials.
+- 🚌 **Bus Tracker**: Quick access to university bus schedules.
+- 🤖 **Gemini AI Chat**: Ask anything about the campus or your courses, and get AI-powered answers.
+- 📝 **User Registration**: Set your batch once and get personalized routine updates.
 
 ---
 
-## ✨ Features
-- 🔹 **Routine Management** — Get daily/weekly schedules instantly  
-- 🔹 **Faculty Directory** — Search and retrieve faculty details  
-- 🔹 **AI Chat Support** — Gemini AI answers queries in real time  
-- 🔹 **User-Friendly Commands** — Simple, intuitive bot commands  
-- 🔹 **Scalable Design** — Easy to extend with new modules  
+## 🛠️ Technology Stack
+
+- **Backend**: Python (python-telegram-bot)
+- **AI**: Google Gemini Pro (Generative AI)
+- **Deployment**: Vercel Serverless Functions
+- **Data Storage**: JSON (Local/Static)
+- **Environment**: Python Dotenv for security
 
 ---
 
 ## 📂 Project Structure
-AI_Project/
-│── bot/              # Core Telegram bot logic
-│── database/         # SQL scripts and schema
-│── modules/          # Routine + Faculty modules
-│── ai_integration/   # Gemini AI API handlers
-│── assets/           # Icons, banners, visuals
-│── README.md         # Project documentation
 
+```text
+routine_bot_project/
+├── api/                # Vercel Serverless entry point (Webhook)
+│   └── index.py        # Webhook handler
+├── data/               # JSON data storage
+│   ├── routine_data.json
+│   ├── faculty_info.json
+│   ├── course_info.json
+│   ├── bus_info.json
+│   └── users.json      # User registration data
+├── bot_polling.py      # Local development (Polling mode)
+├── constants.py        # Shared configuration and constants
+├── routine_data_manager.py # Logic for routine and data retrieval
+├── user_manager.py     # Logic for user registration and roles
+├── gemini_qa.py        # Gemini AI integration logic
+├── vercel.json         # Vercel deployment configuration
+└── .env                # Environment variables (HIDDEN/IGNORED)
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Local Development (Polling)
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Create a `.env` file and add your keys:
+   ```text
+   BOT_TOKEN=your_telegram_bot_token
+   GEMINI_API_KEY=your_google_api_key
+   ```
+3. Run the bot:
+   ```bash
+   python bot_polling.py
+   ```
+
+### 2. Vercel Deployment (Webhook)
+1. Push the code to GitHub.
+2. Connect your repository to Vercel.
+3. Add `BOT_TOKEN` and `GEMINI_API_KEY` in Vercel's environment variables.
+4. Set your Telegram webhook:
+   `https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://your-project.vercel.app`
+
+---
+
+## 🔒 Security Note
+This project uses `.env` to store sensitive tokens. **Never commit your `.env` file to GitHub.** If your tokens were accidentally made public, please:
+1. **Rotate your Telegram Token** via @BotFather.
+2. **Rotate your Gemini API Key** via Google AI Studio.
+3. **Scrub Git History** if necessary using `git filter-repo`.
+
+---
+
+## 👨‍💻 Developers
+- **Abu Ubayda**
+- **Nahidul Islam Rony**
+
+---
+*Made with ❤️ for university students.*
