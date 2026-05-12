@@ -1,5 +1,6 @@
 import logging
 import logging.handlers
+import os
 from pathlib import Path
 
 # Base directory of the project (directory containing this file)
@@ -26,15 +27,29 @@ DAY_MAPPING_EN_TO_BN: dict[str, str] = {
 DAY_ORDER_EN: list[str] = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 DAY_ORDER_BN: list[str] = ["শনিবার", "রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার"]
 
-# Logging configuration – Rotating file handler (max 5 MB per file, keep 3 backups)
-LOG_FILE: Path = BASE_DIR / "logs" / "bot.log"
-LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-handler = logging.handlers.RotatingFileHandler(
-    LOG_FILE, maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
-)
-formatter = logging.Formatter(
-    "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-handler.setFormatter(formatter)
+# Logging configuration
+IS_VERCEL = "VERCEL" in os.environ
 logging.getLogger().setLevel(logging.INFO)
-logging.getLogger().addHandler(handler)
+
+if not IS_VERCEL:
+    # Rotating file handler (max 5 MB per file, keep 3 backups) - Only for local development
+    LOG_DIR = BASE_DIR / "logs"
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    LOG_FILE: Path = LOG_DIR / "bot.log"
+    
+    handler = logging.handlers.RotatingFileHandler(
+        LOG_FILE, maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
+    )
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    handler.setFormatter(formatter)
+    logging.getLogger().addHandler(handler)
+else:
+    # On Vercel, logging to stdout is sufficient
+    stream_handler = logging.StreamHandler()
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    stream_handler.setFormatter(formatter)
+    logging.getLogger().addHandler(stream_handler)
