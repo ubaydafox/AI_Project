@@ -1,17 +1,19 @@
 import json
 from datetime import datetime
 import pytz
+from pathlib import Path
+from constants import DATA_DIR, DAY_MAPPING_EN_TO_BN, DAY_ORDER_EN, DAY_ORDER_BN
 
 # JSON ফাইলগুলো data ফোল্ডার থেকে লোড করার ফাংশন
 def load_data():
     try:
-        with open('data/routine_data.json', 'r', encoding='utf-8') as f:
+        with open(DATA_DIR / 'routine_data.json', 'r', encoding='utf-8') as f:
             routine = json.load(f)
-        with open('data/course_info.json', 'r', encoding='utf-8') as f:
+        with open(DATA_DIR / 'course_info.json', 'r', encoding='utf-8') as f:
             courses = json.load(f)
-        with open('data/faculty_info.json', 'r', encoding='utf-8') as f:
+        with open(DATA_DIR / 'faculty_info.json', 'r', encoding='utf-8') as f:
             faculty = json.load(f)
-        with open('data/bus_info.json', 'r', encoding='utf-8') as f:
+        with open(DATA_DIR / 'bus_info.json', 'r', encoding='utf-8') as f:
             bus = json.load(f)
         return routine, courses, faculty, bus
     except FileNotFoundError as e:
@@ -24,17 +26,13 @@ routine_data, course_info, faculty_info, bus_info = load_data()
 # ==========================================================
 # ফাংশন ১: বর্তমান ক্লাস খুঁজে বের করা
 # ==========================================================
-def get_current_class(target_batch="CSE-60D"): # আপনার ব্যাচ এখানে ডিফল্ট হিসাবে ব্যবহার করতে পারেন
+def get_current_class(target_batch="CSE-60D"): # আপনার ব্যাচ এখানে ডিফল্ট olarak ব্যবহার করতে পারেন
     
     # সিলেট টাইমজোন (Asia/Dhaka) সেট করা
     sylhet_tz = pytz.timezone('Asia/Dhaka')
     now = datetime.now(sylhet_tz)
     
-    day_mapping = {
-        'Sunday': 'রবিবার', 'Monday': 'সোমবার', 'Tuesday': 'মঙ্গলবার', 
-        'Wednesday': 'বুধবার', 'Thursday': 'বৃহস্পতিবার', 'Friday': 'শুক্রবার', 
-        'Saturday': 'শনিবার'
-    }
+    day_mapping = DAY_MAPPING_EN_TO_BN
     current_day_english = now.strftime('%A')
     current_day_bengali = day_mapping.get(current_day_english, current_day_english)
     current_time_str = now.strftime('%I:%M %p') 
@@ -69,6 +67,58 @@ def get_current_class(target_batch="CSE-60D"): # আপনার ব্যাচ
         )
     else:
         return f"আজ, **{current_day_bengali}** {current_time_str} এ আপনার ({target_batch}) কোনো ক্লাস চলছে না।"
+
+# ==========================================================
+# ফাংশন ১.৫: পরবর্তী ক্লাস খুঁজে বের করা
+# ==========================================================
+def get_next_class(target_batch="CSE-58B"):
+    sylhet_tz = pytz.timezone('Asia/Dhaka')
+    now = datetime.now(sylhet_tz)
+
+    day_order_english = DAY_ORDER_EN
+    day_mapping_en_to_bn = DAY_MAPPING_EN_TO_BN
+
+    current_day_english = now.strftime('%A')
+    current_time = now.time()
+
+    # Search over the next 7 days starting from today
+    current_day_index = day_order_english.index(current_day_english)
+
+    for offset in range(7):
+        check_index = (current_day_index + offset) % 7
+        check_day_english = day_order_english[check_index]
+        check_day_bengali = day_mapping_en_to_bn[check_day_english]
+
+        day_classes = [
+            e for e in routine_data
+            if e['batch'] == target_batch and e['day'] == check_day_bengali
+        ]
+        day_classes.sort(key=lambda x: datetime.strptime(x['start_time'], '%I:%M %p'))
+
+        for entry in day_classes:
+            try:
+                start_time = datetime.strptime(entry['start_time'], '%I:%M %p').time()
+            except ValueError:
+                continue
+
+            # On the same day, only show classes that haven't started yet
+            if offset == 0 and start_time <= current_time:
+                continue
+
+            course_full_name = course_info.get(entry['course_code'], entry['course_code'])
+            faculty_full_name = faculty_info.get(entry['faculty_initial'], entry['faculty_initial'])
+
+            day_label = "আজ" if offset == 0 else ("আগামীকাল" if offset == 1 else check_day_bengali)
+            return (
+                f"⏭️ *পরবর্তী ক্লাস ({target_batch}):*\n"
+                f"📅 দিন: {day_label} ({check_day_bengali})\n"
+                f"📚 কোর্স: {course_full_name} ({entry['course_code']})\n"
+                f"👨‍🏫 শিক্ষক: {faculty_full_name} ({entry['faculty_initial']})\n"
+                f"🏫 রুম: {entry['room']}\n"
+                f"🕒 সময়: {entry['start_time']} - {entry['end_time']}"
+            )
+
+    return f"আগামী ৭ দিনে ব্যাচ **{target_batch}** এর কোনো ক্লাস পাওয়া যায়নি।"
 
 # ==========================================================
 # ফাংশন ২: সাপ্তাহিক রুটিন তৈরি করা
